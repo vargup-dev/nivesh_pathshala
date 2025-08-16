@@ -11,6 +11,7 @@ const FormSchema = z.object({
 export type FormState = {
   message: string;
   summary?: string;
+  fullTranslatedDocument?: string;
   success: boolean;
 };
 
@@ -32,14 +33,15 @@ export async function handleSummarizeUrl(
 
   try {
     const result = await summarizeFinancialUrl(validatedFields.data);
-    if (result.summary) {
+    if (result.summary && result.fullTranslatedDocument) {
       return {
         message: 'Summary generated successfully.',
         summary: result.summary,
+        fullTranslatedDocument: result.fullTranslatedDocument,
         success: true,
       };
     } else {
-      return { message: 'Failed to generate summary.', success: false };
+      return { message: 'Failed to generate summary and translated document.', success: false };
     }
   } catch (error) {
     console.error(error);

@@ -19,6 +19,7 @@ export type SummarizeFinancialUrlInput = z.infer<typeof SummarizeFinancialUrlInp
 
 const SummarizeFinancialUrlOutputSchema = z.object({
   summary: z.string().describe('The summary of the document in the target language.'),
+  fullTranslatedDocument: z.string().describe('The full content of the document, translated into the target language.'),
 });
 export type SummarizeFinancialUrlOutput = z.infer<typeof SummarizeFinancialUrlOutputSchema>;
 
@@ -30,13 +31,15 @@ const summarizeFinancialUrlPrompt = ai.definePrompt({
   name: 'summarizeFinancialUrlPrompt',
   input: {schema: SummarizeFinancialUrlInputSchema},
   output: {schema: SummarizeFinancialUrlOutputSchema},
-  prompt: `You are an expert financial analyst specializing in summarizing SEBI/NISM documents.  Your job is to take a URL, read the contents of the URL, and provide a detailed summary in the target language.
+  prompt: `You are an expert financial analyst and translator. Your job is to take a URL of a SEBI/NISM document, read its contents, and perform two tasks:
+  
+  1.  Translate the ENTIRE document into the target language.
+  2.  Provide a detailed, elaborate summary of the document in the same target language. This summary should cover all key points in a comprehensive manner so a user can understand the document without reading it fully.
 
-  Make sure you summarize all the key points of the document in a comprehensive manner, and present it in a clear way so that the user can quickly understand the key points without reading the entire document. The summary should be elaborate and cover all aspects of the document.
+  Return both the full translated text and the summary.
 
   URL: {{{url}}}
-  Language: {{{language}}}
-  Summary:`, 
+  Language: {{{language}}}`, 
 });
 
 const summarizeFinancialUrlFlow = ai.defineFlow(

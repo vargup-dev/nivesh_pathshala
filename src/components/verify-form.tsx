@@ -24,6 +24,8 @@ import { useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, FileText, AlertTriangle } from 'lucide-react';
 import { Skeleton } from './ui/skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { ScrollArea } from './ui/scroll-area';
 
 const initialState: FormState = {
   message: '',
@@ -37,10 +39,10 @@ function SubmitButton() {
       {pending ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          Summarizing...
+          Processing...
         </>
       ) : (
-        'Generate Summary'
+        'Generate'
       )}
     </Button>
   );
@@ -68,7 +70,7 @@ export function VerifyForm() {
             <CardHeader>
               <CardTitle>Document Details</CardTitle>
               <CardDescription>
-                Provide the URL and target language for summarization.
+                Provide the URL and target language for translation and summarization.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -104,17 +106,7 @@ export function VerifyForm() {
         </form>
       </div>
       <div className="lg:col-span-3">
-        <Card className="min-h-[300px]">
-          <CardHeader>
-            <CardTitle>Generated Summary</CardTitle>
-            <CardDescription>
-              The AI-powered summary will appear below.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <SummaryDisplay serverState={state} />
-          </CardContent>
-        </Card>
+        <SummaryDisplay serverState={state} />
       </div>
     </div>
   );
@@ -125,33 +117,78 @@ function SummaryDisplay({ serverState }: { serverState: FormState }) {
 
   if (pending) {
     return (
-      <div className="space-y-4">
-        <Skeleton className="h-6 w-3/4" />
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-5/6" />
-      </div>
+      <Card className="min-h-[300px]">
+        <CardHeader>
+          <Skeleton className="h-7 w-48" />
+          <Skeleton className="h-5 w-full" />
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Skeleton className="h-6 w-3/4" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-5/6" />
+        </CardContent>
+      </Card>
     );
   }
 
-  if (serverState.success && serverState.summary) {
+  if (serverState.success && serverState.summary && serverState.fullTranslatedDocument) {
     return (
-      <div className="space-y-4 prose prose-sm dark:prose-invert max-w-none">
-        {serverState.summary.split('\n').map((paragraph, index) => (
-          <p key={index}>{paragraph}</p>
-        ))}
-      </div>
+      <Tabs defaultValue="summary" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="summary">Summary</TabsTrigger>
+          <TabsTrigger value="full">Full Document</TabsTrigger>
+        </TabsList>
+        <TabsContent value="summary">
+          <Card>
+            <CardHeader>
+              <CardTitle>Generated Summary</CardTitle>
+              <CardDescription>The AI-powered summary of the document.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ScrollArea className="h-[400px] pr-4">
+                <div className="space-y-4 prose prose-sm dark:prose-invert max-w-none">
+                  {serverState.summary.split('\n').map((paragraph, index) => (
+                    <p key={index}>{paragraph}</p>
+                  ))}
+                </div>
+              </ScrollArea>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="full">
+          <Card>
+            <CardHeader>
+              <CardTitle>Full Translated Document</CardTitle>
+              <CardDescription>The full document translated into your selected language.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ScrollArea className="h-[400px] pr-4">
+              <div className="space-y-4 prose prose-sm dark:prose-invert max-w-none">
+                {serverState.fullTranslatedDocument.split('\n').map((paragraph, index) => (
+                  <p key={index}>{paragraph}</p>
+                ))}
+              </div>
+              </ScrollArea>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     );
   }
-
+  
   const Icon = serverState.message ? AlertTriangle : FileText;
-  const text = serverState.message ? 'An error occurred' : 'Your summary will be displayed here once generated.';
+  const text = serverState.message ? 'An error occurred' : 'Your results will be displayed here once generated.';
   const colorClass = serverState.message ? 'text-destructive' : 'text-muted-foreground';
 
   return (
-    <div className="flex flex-col items-center justify-center h-full min-h-[150px] text-center p-4 border-2 border-dashed rounded-lg">
-      <Icon className={`w-12 h-12 mb-4 ${colorClass}`} />
-      <p className={`text-sm ${colorClass}`}>{text}</p>
-    </div>
+    <Card className="min-h-[300px]">
+      <CardContent className="flex flex-col items-center justify-center h-full min-h-[300px] text-center p-4">
+        <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-lg w-full h-full">
+          <Icon className={`w-12 h-12 mb-4 ${colorClass}`} />
+          <p className={`text-sm ${colorClass}`}>{text}</p>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
