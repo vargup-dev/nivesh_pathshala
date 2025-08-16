@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
-import { SidebarProvider, Sidebar, SidebarInset } from '@/components/ui/sidebar';
-import { Nav } from '@/components/layout/nav';
 import { Toaster } from '@/components/ui/toaster';
+import { Header } from '@/components/layout/header';
 
 export const metadata: Metadata = {
   title: 'Nivesh Pathshala',
@@ -30,18 +29,10 @@ export default function RootLayout({
           'min-h-screen bg-background font-body antialiased',
         )}
       >
-        <SidebarProvider>
-          <Sidebar
-            variant="inset"
-            collapsible="icon"
-            className="dark hidden bg-card md:block"
-          >
-            <Nav />
-          </Sidebar>
-          <div className="flex min-h-svh w-full flex-col">
-            <SidebarInset>{children}</SidebarInset>
-          </div>
-        </SidebarProvider>
+        <div className="flex min-h-svh w-full flex-col">
+          <Header />
+          <main className="flex-1">{children}</main>
+        </div>
         <Toaster />
       </body>
     </html>
