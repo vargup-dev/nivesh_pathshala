@@ -10,8 +10,6 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import pdf from 'pdf-parse';
-
 
 const SummarizeFinancialUrlInputSchema = z.object({
   url: z.string().url().describe('The URL of the SEBI/NISM document to summarize.'),
@@ -33,6 +31,7 @@ const SummarizeDocumentInputSchema = z.object({
 
 
 export async function summarizeFinancialUrl(input: SummarizeFinancialUrlInput): Promise<SummarizeFinancialUrlOutput> {
+  const pdf = (await import('pdf-parse')).default;
   const response = await fetch(input.url);
   if (!response.ok) {
     throw new Error(`Failed to fetch URL: ${response.statusText}`);
