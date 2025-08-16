@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { handleSummarizeUrl, type FormState } from '@/app/verify/actions';
+import { handleSummarizeUrl, type FormState } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, FileText, AlertTriangle } from 'lucide-react';
 import { Skeleton } from './ui/skeleton';

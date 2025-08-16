@@ -9,8 +9,6 @@ import {
 } from '@/components/ui/sidebar';
 import { usePathname } from 'next/navigation';
 import {
-  LayoutDashboard,
-  CandlestickChart,
   ShieldCheck,
   Building,
 } from 'lucide-react';
@@ -20,16 +18,6 @@ import { cn } from '@/lib/utils';
 const links = [
   {
     href: '/',
-    label: 'Learn',
-    icon: LayoutDashboard,
-  },
-  {
-    href: '/practice',
-    label: 'Practice',
-    icon: CandlestickChart,
-  },
-  {
-    href: '/verify',
     label: 'Verify',
     icon: ShieldCheck,
   },
