@@ -3,7 +3,6 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { SidebarProvider, Sidebar, SidebarInset } from '@/components/ui/sidebar';
 import { Nav } from '@/components/layout/nav';
-import { Header } from '@/components/layout/header';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
@@ -40,7 +39,6 @@ export default function RootLayout({
             <Nav />
           </Sidebar>
           <div className="flex min-h-svh w-full flex-col">
-            <Header />
             <SidebarInset>{children}</SidebarInset>
           </div>
         </SidebarProvider>
