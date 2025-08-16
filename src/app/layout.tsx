@@ -31,7 +31,7 @@ export default function RootLayout({
       >
         <div className="flex min-h-svh w-full flex-col">
           <Header />
-          <main className="flex-1">{children}</main>
+          <main className="flex flex-1 justify-center">{children}</main>
         </div>
         <Toaster />
       </body>
