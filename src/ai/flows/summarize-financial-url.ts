@@ -31,18 +31,31 @@ const SummarizeDocumentInputSchema = z.object({
 
 
 export async function summarizeFinancialUrl(input: SummarizeFinancialUrlInput): Promise<SummarizeFinancialUrlOutput> {
-  const pdf = (await import('pdf-parse')).default;
-  const response = await fetch(input.url);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch URL: ${response.statusText}`);
+  try {
+    const pdf = (await import('pdf-parse')).default;
+    const response = await fetch(input.url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch URL: ${response.statusText}`);
+    }
+    const buffer = await response.arrayBuffer();
+    const data = await pdf(Buffer.from(buffer));
+    
+    if (!data.text) {
+        throw new Error('Could not extract text from the PDF.');
+    }
+
+    return await summarizeFinancialUrlFlow({
+      documentText: data.text,
+      language: input.language,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+        console.error('Error in summarizeFinancialUrl:', error.message);
+        throw new Error(`Failed to process PDF: ${error.message}`);
+    }
+    console.error('An unknown error occurred in summarizeFinancialUrl:', error);
+    throw new Error('An unknown error occurred while processing the PDF.');
   }
-  const buffer = await response.arrayBuffer();
-  const data = await pdf(Buffer.from(buffer));
-  
-  return summarizeFinancialUrlFlow({
-    documentText: data.text,
-    language: input.language,
-  });
 }
 
 const summarizeFinancialUrlPrompt = ai.definePrompt({
@@ -68,6 +81,9 @@ const summarizeFinancialUrlFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await summarizeFinancialUrlPrompt(input);
-    return output!;
+    if (!output) {
+      throw new Error('The AI model did not return a valid output.');
+    }
+    return output;
   }
 );

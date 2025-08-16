@@ -45,6 +45,7 @@ export async function handleSummarizeUrl(
     }
   } catch (error) {
     console.error(error);
-    return { message: 'An unexpected error occurred.', success: false };
+    const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred.';
+    return { message: errorMessage, success: false };
   }
 }
