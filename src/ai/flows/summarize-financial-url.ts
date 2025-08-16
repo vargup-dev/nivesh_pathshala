@@ -37,7 +37,7 @@ export async function summarizeFinancialUrl(input: SummarizeFinancialUrlInput): 
     throw new Error(`Failed to fetch URL: ${response.statusText}`);
   }
   const buffer = await response.arrayBuffer();
-  const data = await pdf(buffer);
+  const data = await pdf(Buffer.from(buffer));
   
   return summarizeFinancialUrlFlow({
     documentText: data.text,
