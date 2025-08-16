@@ -30,9 +30,9 @@ const summarizeFinancialUrlPrompt = ai.definePrompt({
   name: 'summarizeFinancialUrlPrompt',
   input: {schema: SummarizeFinancialUrlInputSchema},
   output: {schema: SummarizeFinancialUrlOutputSchema},
-  prompt: `You are an expert financial analyst specializing in summarizing SEBI/NISM documents.  Your job is to take a URL, read the contents of the URL, and provide a summary in the target language.
+  prompt: `You are an expert financial analyst specializing in summarizing SEBI/NISM documents.  Your job is to take a URL, read the contents of the URL, and provide a detailed summary in the target language.
 
-  Make sure you summarize all the key points of the document, and present it in a clear, concise way so that the user can quickly understand the key points without reading the entire document.
+  Make sure you summarize all the key points of the document in a comprehensive manner, and present it in a clear way so that the user can quickly understand the key points without reading the entire document. The summary should be elaborate and cover all aspects of the document.
 
   URL: {{{url}}}
   Language: {{{language}}}
