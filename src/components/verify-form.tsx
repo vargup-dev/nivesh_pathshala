@@ -85,7 +85,7 @@ export function VerifyForm() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="language">Language</Label>
-                <Select name="language" defaultValue="English">
+                <Select name="language" >
                   <SelectTrigger id="language">
                     <SelectValue placeholder="Select language" />
                   </SelectTrigger>
